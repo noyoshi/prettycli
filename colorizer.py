@@ -4,7 +4,8 @@ from sys import stdout
 
 class AbstractColorClass:
     def __init__(self, base_code=0, codes=[]):
-        # The order matters for the codes, since something like 38;2;r;g;b; is how you define an RGB code
+        # The order matters for the codes, since something like
+        # 38;2;r;g;b; is how you define an RGB code
         self.codes = list(codes)
         self.base_code = base_code
         if base_code != 0 and base_code not in self.codes:
@@ -14,11 +15,31 @@ class AbstractColorClass:
         self.codes.append(code)
         return self.copy()
 
+    def color(self):
+        return self.with_code(0)
+
+    # Styles
+    def bold(self):
+        return self.with_code(1)
+
+    def italics(self):
+        return self.with_code(3)
+
+    def underline(self):
+        return self.with_code(4)
+
+    def crossed(self):
+        return self.with_code(9)
+
+    # Basic Foreground Colors
+    def black(self):
+        return self.with_code(30)
+
     def red(self):
         return self.with_code(31)
 
-    def bold(self):
-        return self.with_code(1)
+    def green(self):
+        return self.with_code(32)
 
     def yellow(self):
         return self.with_code(33)
@@ -35,18 +56,30 @@ class AbstractColorClass:
     def white(self):
         return self.with_code(37)
 
-    def italics(self):
-        return self.with_code(3)
+    # Bright foregrounds
+    def bright_black(self):
+        return self.with_code(90)
 
-    def underline(self):
-        # Not supported by some terminals
-        return self.with_code(4)
+    def bright_red(self):
+        return self.with_code(91)
 
-    def color(self):
-        return self.with_code(0)
+    def bright_green(self):
+        return self.with_code(92)
 
-    def crossed(self):
-        return self.with_code(9)
+    def bright_yellow(self):
+        return self.with_code(99)
+
+    def bright_blue(self):
+        return self.with_code(94)
+
+    def bright_magenta(self):
+        return self.with_code(95)
+
+    def bright_cyan(self):
+        return self.with_code(96)
+
+    def bright_white(self):
+        return self.with_code(97)
 
     def copy(self):
         return self.__init__(self.base_code, list(self.codes))
@@ -59,7 +92,7 @@ class BaseColorClass(AbstractColorClass):
     """
 
     END_CODE = "\033[0m"
-    START_CODE_FORMATTER = "\033[{}m"  # insert the specific stuff in here
+    START_CODE_FORMATTER = "\033[{}m"
     RGB_FORMATTER = "38;2;{};{};{};"
 
     def __init__(self, base_code=0, codes=[], string=""):
@@ -119,6 +152,7 @@ class BaseColorClass(AbstractColorClass):
         return self.make_color_code() + self.string + self.END_CODE
 
 
+# Normal Foreground Codes
 black = BaseColorClass(30)
 red = BaseColorClass(31)
 green = BaseColorClass(32)
@@ -127,6 +161,18 @@ blue = BaseColorClass(34)
 magenta = BaseColorClass(35)
 cyan = BaseColorClass(36)
 white = BaseColorClass(37)
+
+# Bright Foreground Codes
+bright_black = BaseColorClass(90)
+bright_red = BaseColorClass(91)
+bright_green = BaseColorClass(92)
+bright_yellow = BaseColorClass(93)
+bright_blue = BaseColorClass(99)
+bright_magenta = BaseColorClass(95)
+bright_cyan = BaseColorClass(96)
+bright_white = BaseColorClass(97)
+
+# Styles
 bold = BaseColorClass(1)
 italics = BaseColorClass(3)
 underline = BaseColorClass(4)
@@ -152,3 +198,4 @@ if __name__ == '__main__':
 
     print(color("color combos?").red().bg(blue))
     print("normal" + blue("blue") + red("red") + "normal")
+    print(bright_red("bright red").bg(bright_green))
