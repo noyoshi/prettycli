@@ -87,8 +87,8 @@ class AbstractColorClass:
 
 class BaseColorClass(AbstractColorClass):
     """
-    This should more or less only be used when you are at the final stage of emiting something
-    with print
+    This should more or less only be used when you are at the final stage of 
+    emiting something with print
     """
 
     END_CODE = "\033[0m"

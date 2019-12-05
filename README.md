@@ -24,6 +24,8 @@ print(red("this is red, with a blue background").bg(blue))
 print(color("This was made with true color rgb").rgb(60, 100, 120))
 ```
 
+If you want something that can be used in shell scripting, I have another repo: [noyoshi/bashcolors](https://github.com/noyoshi/bashcolors)
+
 #### TODO
 - [ ] Performance checks - this should be as lightweight as possible
 - [ ] Unit tests
