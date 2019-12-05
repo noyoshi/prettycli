@@ -52,8 +52,9 @@ class box:
         return self
 
 
-print(blue(box("hello there, general kenobi").thick().draw()).bold())
-print(box(red("this is red only here").bold()).thick().with_color(blue).draw())
-print(blue(box(red("this is red only here").bold()).thick().draw()))
+if __name__ == "__main__":
+    print(blue(box("hello there, general kenobi").thick().draw()).bold())
+    print(box(red("this is red only here").bold()).thick().with_color(blue).draw())
+    print(blue(box(red("this is red only here").bold()).thick().draw()))
 
-print(box("Hello World!").with_color(red).draw())
+    print(box("Hello World!").with_color(red).draw())
