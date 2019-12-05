@@ -4,7 +4,7 @@
 
 ### Color module example
 ![Demo Gif](docs/demo.gif)
-_Made with ascicinema_
+_Made with asciinema_
 
 #### TODO
 - [ ] Performance checks - this should be as lightweight as possible
