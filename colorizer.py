@@ -1,19 +1,6 @@
 from os import isatty
 from sys import stdout
 
-def tty_brancher(function):
-    """
-    function MUST RETURN A LIST OF STRINGS OF SIZE 3
-    """
-    def f(*args, **kwargs):
-        if isatty(stdout.fileno()):
-            # print("is a tty")
-            return ''.join(function(*args, **kwargs))
-        # print("not a tty")
-        return_data = function(*args, **kwargs)
-        return return_data[1]
-    return f
-
 class BaseColorClass:
     """
     This should more or less only be used when you are at the final stage of emiting something
@@ -24,8 +11,8 @@ class BaseColorClass:
     START_CODE_FORMATTER = "\033[{}m" # insert the specific stuff in here
     RGB_FORMATTER = "38;2;{};{};{};"
     def __init__(self, bg="", fg="", color_code=None, string=""):
-        self.bg = bg
-        self.fg = fg
+        self._bg = bg
+        self._fg = fg
 
         # Should be set by the call
         self.string = string
@@ -34,56 +21,35 @@ class BaseColorClass:
         self.color_code = color_code
         self.codes = []
 
-    def fore_ground(self, code):
-        self.fg = code
+    def fg(self, code):
+        self._fg = code
         self.codes.append(code)
-        return self
+        return self.copy()
 
-    def background(self, cls):
-        self.bg = cls.fg + 10
-        self.codes.append(self.bg)
-        return self
+    def bg(self, cls):
+        self._bg = cls._fg + 10
+        self.codes.append(self._bg)
+        return self.copy()
 
     def rgb(self, r, g, b):
         self.codes += [38, 2, r, g, b]
-        return self
+        return self.copy()
 
     def rgb_bg(self, r, g, b):
         self.codes += [48, 2, r, g, b]
-        return self
+        return self.copy()
 
-    def code(self, code):
+    def with_code(self, code):
         self.codes.append(str(code))
-        return self
+        return self.copy()
 
     def make_color_code(self):
         basic_codes = ';'.join(list(map(str, self.codes)))
-
-        # partials = [self.rgb_string]
-        # partials = [x for x in partials if x]
         return self.START_CODE_FORMATTER.format(basic_codes)
-
-    def __call__(self, string=None):
-        if string is not None:
-            self.string = string
-        return self.copy()
 
     def build(self):
         return self.copy()
 
-    @tty_brancher
-    def __str__(self):
-        self.color_code = self.make_color_code()
-
-        return "{}#{}#{}".format(self.color_code, self.string, self.END_CODE).split("#")
-
-    def __len__(self):
-        return len(self.string)
-    
-    def __add__(self, x):
-        return self.string + x
-
-    @tty_brancher
     def to_str(self):
         """To make it a bit easier to convert"""
         return str(self)
@@ -93,9 +59,34 @@ class BaseColorClass:
 
     def copy(self):
         # TODO refactor this
-        n = BaseColorClass(self.bg, self.fg, self.color_code, self.string)
+        n = BaseColorClass(self._bg, self._fg, self.color_code, self.string)
         n.codes = list(self.codes)
         return n
+
+    def __len__(self):
+        return len(self.string)
+
+    def __add__(self, x):
+        return str(self) + x
+
+    def __radd__(self, x):
+        return x + str(self)
+
+    def __call__(self, string=None):
+        if string is not None:
+            self.string = string
+        return self.copy()
+
+    def __str__(self):
+        self.color_code = self.make_color_code()
+
+        # If the output device is NOT a tty, don't print color codes
+        if not isatty(stdout.fileno()):
+            return self.string
+
+        return self.color_code + self.string + self.END_CODE
+
+
 
 
 colors = [
@@ -112,21 +103,30 @@ colors = [
     ("underline", 4),
     ("normal", 0),
     ("crossed", 9)
-    # ("framed", 51),
-    # ("encircled", 52),
-    # ("blink", 5)
 ]
+
+black = BaseColorClass().fg(30)
+red = BaseColorClass().fg(31)
+green = BaseColorClass().fg(32)
+yellow = BaseColorClass().fg(33)
+blue = BaseColorClass().fg(34)
+magenta = BaseColorClass().fg(35)
+cyan = BaseColorClass().fg(36)
+white = BaseColorClass().fg(37)
+bold = BaseColorClass().fg(1)
+italics = BaseColorClass().fg(3)
+underline = BaseColorClass().fg(4)
+normal = BaseColorClass().fg(0)
+crossed = BaseColorClass().fg(9)
+
 
 def wrapped(code):
     def add_atrribute(self, string=""):
         x = self.copy()
         x.codes.append(code)
         x.string += string
-        return x 
+        return x
     return add_atrribute
-
-for c, code in colors:
-    locals()[c] = BaseColorClass().fore_ground(code)
 
 for c, code in colors:
     setattr(BaseColorClass, c, wrapped(code))
@@ -148,4 +148,5 @@ if __name__ == '__main__':
             .bold()
             .crossed())
 
-    print(normal("whacky stuff!"))
+    print(normal("color combos?").red().bg(blue))
+    print("normal" + blue("blue") + red("red") + "normal")
