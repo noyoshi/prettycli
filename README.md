@@ -2,6 +2,9 @@
 <h5 align="center">
 <i align="center">Dependency free pretty CLI printing in Python (colors, unicode boxes, etc). More to come!</i></h5>
 
+### Installation
+`$ python3 -m pip install prettycli`
+
 ### Color module demo
 ![Demo Gif](docs/demo.gif)
 _Made with asciinema_

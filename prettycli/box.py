@@ -1,4 +1,4 @@
-from colorizer import blue, red, color, yellow
+from prettycli.colorizer import blue, red, color, yellow
 
 
 class box:
