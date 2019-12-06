@@ -2,9 +2,11 @@
 <h5 align="center">
 <i align="center">Dependency free pretty CLI printing in Python (colors, unicode boxes, etc). More to come!</i></h5>
 
-### Color module example
+### Color module demo
 ![Demo Gif](docs/demo.gif)
 _Made with asciinema_
+
+_Ignore the bold thing it is a bug with asciinema_
 
 ```py
 from colorizer import red, blue, yellow, color
@@ -23,6 +25,10 @@ print(red("this is red, with a blue background").bg(blue))
 # the foreground with the rgb method
 print(color("This was made with true color rgb").rgb(60, 100, 120))
 ```
+
+### Box module demo
+<img align="center" src="docs/box.gif" width="600" />
+_Made with asciinema_
 
 If you want something that can be used in shell scripting, I have another repo: [noyoshi/bashcolors](https://github.com/noyoshi/bashcolors)
 
